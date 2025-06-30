@@ -5,24 +5,27 @@ console.log(`Exercise 1: File Reader with Stats`);
 
 
 function readFileWithStats(filePath) {
-fs.stat(filePath , (err, stats) => {
-    if (err){
-        console.error(`Error getting file stats: ${err}`);
+  fs.readFile(filePath, 'utf8', (err, data) => {
+    if (err) {
+      console.error('Error:', err);
+      return;
     }
-    else {
-        console.log(`File size: ${stats.size} bytes`);
-        console.log(`File created at: ${stats.birthtime}`);
-        console.log(`File modified at: ${stats.mtime}`);
-    }
-})
-fs.readFile(filePath , 'utf8', (err, data) => {
-  if (err) {
-    console.error('Error reading file:', err);
-    return;
-  }
-  console.log('File content:', data);
-})
-};
+
+    console.log('File Content: \n' + data); 
+
+    
+    fs.stat(filePath, (err, stats) => {
+      if (err) {
+        console.error('Error getting file stats:', err);
+        return;
+      }
+
+      console.log(`The size file is: ${stats.size} bytes`);
+      console.log(`Created : ${stats.birthtime.toISOString()}`);
+    });
+  });
+}
+
 readFileWithStats('./myName.txt');
 
 
@@ -63,6 +66,7 @@ function getRandomLineFromFile(filePath) {
     fs.readFile(filePath, 'utf8', (err, data) => {
         if (err) {
             console.log(err);
+            return;
         }
         //console.log(data)
         const lines = data.split('\n').filter((line) => line)
@@ -84,7 +88,7 @@ console.log(`Exercise 5: System Free Memory Logger`);
 
 function logFreeMemory(interval) {
     let counter = 0;
-    const maxRuns = 2;
+    const maxRuns = 5;
     const intervalId = setInterval(() => {
         //const memoryUsage = process.memoryUsage();
         const heapFree =(os.freemem() / os.totalmem() * 100);
